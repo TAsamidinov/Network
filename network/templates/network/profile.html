@@ -1,0 +1,68 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="profile-head">
+        <div class="profile-row">
+        <div class="profile-left">
+            <div class="avatar"><span>{{ profile_user.username|slice:":1"|upper }}</span></div>
+        </div>
+        <div class="profile-right">
+            <div class="profile-username">{{ profile_user.username }}</div>
+    
+            <div class="profile-actions">
+            {% if request.user.is_authenticated %}
+                {% if is_following %}
+                <form action="{% url 'unfollow' profile_user.username %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn pill danger">Unfollow</button>
+                </form>
+                {% else %}
+                <form action="{% url 'follow' profile_user.username %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-primary">Follow</button>
+                </form>
+                {% endif %}
+                <!--Not working button, just for beauty -->
+                <form > 
+                    {% csrf_token %}
+                    <button class="btn btn-outline-primary">Send a Message</button>
+                </form>
+            {% endif %}
+            </div>
+    
+            <div class="profile-stats">
+                <span class="stat"><strong>4</strong> posts</span>
+                <span class="stat"><strong>{{ profile_user.followers.count }}</strong> followers</span>
+                <span class="stat"><strong>{{ profile_user.following.count }}</strong> following</span>
+            </div>
+        </div>
+        </div>
+        <div class="profile-divider"></div>
+    </div>
+
+    <div id="posts-area" class="posts-area">
+        {% for post in posts %}
+            <hr>
+            <div class="post-card mx-auto">
+                <div class="post-left">
+                    <div class="post-avatar">
+                      <span>{{ post.author.username|slice:":1"|upper }}</span>
+                    </div>
+                  </div>
+            <div class="post-right">
+              <h5><a href="{% url 'profile' profile_user.username %}">{{ profile_user.username }}</a></h5>
+              <p>{{ post.content }}</p>
+              <small>Posted on {{ post.timestamp }}</small>
+              <br><br>
+              <button class="btn btn-outline-primary"> Like: {{ post.likes }}</button>
+              <button class="btn btn-outline-primary">Comment: 0</button>
+              <button class="btn btn-outline-primary"> Share: 0 </button>
+              
+            </div>
+          </div>
+        {% empty %}
+          <p>No posts available.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

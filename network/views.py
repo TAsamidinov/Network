@@ -3,14 +3,21 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
+from django.core.paginator import Paginator
 
 from .models import User
 from .models import Post
 from .models import Follow
 
 def index(request):
+    posts_qs = Post.objects.all().order_by("-timestamp")
+    paginator = Paginator(posts_qs, 10)
+
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+
     return render(request, "network/index.html", {
-        "posts": Post.objects.all().order_by("-timestamp")
+        "page_obj": page_obj
     })
 def newPost(request):
     if request.method == "POST":

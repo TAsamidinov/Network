@@ -39,8 +39,15 @@ def profile(request, username):
         "is_following": is_following
     })
 
-def folowing(request):
-    return render(request, "network/folowing.html")
+def following(request):
+        followed_users = Follow.objects.filter(from_user=request.user).values_list("to_user", flat=True)
+
+        # Get posts authored by those followed users
+        posts = Post.objects.filter(author__in=followed_users).order_by("-timestamp")
+
+        return render(request, "network/following.html", {
+            "posts": posts
+        })
 
 def follow(self, other):
     if self != other:

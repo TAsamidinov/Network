@@ -23,8 +23,14 @@
 
 /* Header container (above posts) */
 .profile-head{
-  margin: 24px auto 8px;
-  padding: 16px 20px 0;
+  margin-top: 16px;
+  margin-right: auto;
+  margin-bottom: 8px;
+  margin-left: 5%;
+  padding-top: 17px;
+  padding-right: 20px;
+  padding-bottom: 0;
+  padding-left: 0;
   background: var(--ink);
   width: 90%;  
   height: 230px;
@@ -71,7 +77,7 @@
 }
 
 /* Actions */
-.profile-actions{ display: flex; gap: 10px; flex-wrap: wrap; }
+.profile-actions{ display: flex; gap: 15px; flex-wrap: wrap; }
 .profile-actions form{ margin: 0; }
 
 .btn {
@@ -134,8 +140,15 @@
   .post-right p {
     margin-bottom: 8px;
   }
-
-
+  .custom-navbar {
+    margin-left: 5%;
+  }
+  .custom-navbar-end {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+    margin-right: 5%;
+  }
 
   .post-avatar {
     width: 80px;

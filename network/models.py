@@ -14,6 +14,13 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def follow(self, other):
+        if self != other:
+            Follow.objects.get_or_create(from_user=self, to_user=other)
+
+    def unfollow(self, other):
+        Follow.objects.filter(from_user=self, to_user=other).delete()
 
 class Follow(models.Model):
     from_user = models.ForeignKey(

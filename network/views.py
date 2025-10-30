@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.core.paginator import Paginator
 
@@ -43,7 +43,8 @@ def profile(request, username):
     return render(request, "network/profile.html", {
         "profile_user": User.objects.get(username=username),
         "posts": Post.objects.filter(author=User.objects.get(username=username)).order_by("-timestamp"),
-        "is_following": is_following
+        "is_following": is_following,
+        "page_obj": Paginator(Post.objects.filter(author=User.objects.get(username=username)).order_by("-timestamp"), 10).get_page(request.GET.get("page", 1))
     })
 
 def following(request):
@@ -56,20 +57,17 @@ def following(request):
             "posts": posts
         })
 
-def follow(self, other):
-    if self != other:
-        Follow.objects.get_or_create(from_user=self, to_user=other)
+def follow(request, username):
+    other = get_object_or_404(User, username=username)
+    request.user.follow(other)
 
-def unfollow(self, other):
-    Follow.objects.filter(from_user=self, to_user=other).delete()
+    return redirect("profile", username=other.username)
 
+def unfollow(request, username):
+    other = get_object_or_404(User, username=username)
+    request.user.unfollow(other)
 
-
-
-
-
-
-
+    return redirect("profile", username=other.username)
 
 def login_view(request):
     if request.method == "POST":

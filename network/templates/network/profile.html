@@ -15,13 +15,15 @@
                 {% if is_following %}
                 <form action="{% url 'unfollow' profile_user.username %}" method="post">
                     {% csrf_token %}
-                    <button class="btn pill danger">Unfollow</button>
+                    <button class="btn btn-outline-danger">Unfollow</button>
                 </form>
                 {% else %}
-                <form action="{% url 'follow' profile_user.username %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-outline-primary">Follow</button>
-                </form>
+                    {% if request.user.username != profile_user.username %}
+                        <form action="{% url 'follow' profile_user.username %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-primary">Follow</button>
+                        </form>
+                    {% endif %}
                 {% endif %}
                 <!--Not working button, just for beauty -->
                 <form > 
@@ -42,7 +44,7 @@
     </div>
 
     <div id="posts-area" class="posts-area">
-        {% for post in posts %}
+        {% for post in page_obj %}
             <hr>
             <div class="post-card mx-auto">
                 <div class="post-left">
@@ -65,4 +67,44 @@
           <p>No posts available.</p>
         {% endfor %}
     </div>
+    
+    <nav aria-label="Posts pagination">
+        <ul class="pagination justify-content-center mt-3">
+      
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="btn btn-outline-primary mx-1 " href="?page={{ page_obj.previous_page_number }}">
+                Previous
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <span class="btn btn-outline-primary text-dark mx-1 disabled">
+                Previous
+              </span>
+            </li>
+          {% endif %}
+      
+          <li class="page-item disabled">
+            <span class="btn btn-light border-primary text-primary mx-1">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+          </li>
+      
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="btn btn-outline-primary mx-1" href="?page={{ page_obj.next_page_number }}">
+                Next
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <span class="btn btn-outline-primary text-dark mx-1 disabled">
+                Next
+              </span>
+            </li>
+          {% endif %}
+      
+        </ul>
+      </nav>
 {% endblock %}

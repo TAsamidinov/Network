@@ -22,9 +22,12 @@
         <p>{{ post.content }}</p>
         <small>Posted on {{ post.timestamp }}</small>
         <br><br>
-        <button class="btn btn-outline-primary">Like: {{ post.likes }}</button>
-        <button class="btn btn-outline-primary">Comment: 0</button>
-        <button class="btn btn-outline-primary">Share: 0</button>
+        <div class="post-actions">
+          <button class="btn btn-outline-primary">Like: {{ post.likes }}</button>
+          <button class="btn btn-outline-primary">Comment: 0</button>
+          <button class="btn btn-outline-primary">Share: 0</button>
+          <button class="btn btn-outline-primary">Edit</button>
+        </div>
       </div>
     </div>
   {% empty %}

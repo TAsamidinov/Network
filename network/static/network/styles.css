@@ -80,6 +80,14 @@
 .profile-actions{ display: flex; gap: 15px; flex-wrap: wrap; }
 .profile-actions form{ margin: 0; }
 
+.post-actions {
+  display: flex;
+  gap: 10px;         
+}
+.post-actions .btn:last-child {
+  margin-left: auto; 
+}
+
 .btn {
   padding: 8px 14px;
   font-weight: 700;

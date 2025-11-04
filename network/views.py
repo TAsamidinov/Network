@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed, Http404, HttpResponseForbidden, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
+import json
 
-from .models import User
-from .models import Post
-from .models import Follow
+from .models import User, Post, Follow
 
 def index(request):
     posts_qs = Post.objects.all().order_by("-timestamp")
@@ -56,6 +57,51 @@ def following(request):
         return render(request, "network/following.html", {
             "posts": posts
         })
+
+@login_required
+@require_http_methods(["PUT"])
+def post_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if post.author != request.user:
+        return HttpResponse(status=403)
+    
+    try: 
+        data = json.loads(request.body.decode("utf-8"))
+        content = data.get("content", "").strip()
+        if not content:
+            return HttpResponse(status=400)
+        
+        post.content = content
+        post.save()
+        return JsonResponse({"message": "Post updated successfully.", "content": post.content})
+    
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"error": "Invalid JSON."}, status=400)
+    
+@login_required
+@require_http_methods(["PUT"])
+def edit_post(request, post_id):
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404("Post not found")
+
+    if post.author != request.user:
+        return HttpResponseForbidden("Not allowed")
+
+    try:
+        payload = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return HttpResponseBadRequest("Invalid JSON")
+
+    content = (payload.get("content") or "").strip()
+    if not content:
+        return HttpResponseBadRequest("Content cannot be empty")
+
+    post.content = content
+    post.save(update_fields=["content"])
+    return JsonResponse({"content": post.content})
 
 def follow(request, username):
     other = get_object_or_404(User, username=username)

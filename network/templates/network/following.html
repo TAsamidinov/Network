@@ -22,7 +22,15 @@
                 <button class="btn btn-outline-primary">Like: {{ post.likes }}</button>
                 <button class="btn btn-outline-primary">Comment: 0</button>
                 <button class="btn btn-outline-primary">Share: 0</button>
-                <button class="btn btn-outline-primary">Edit</button>
+                {% if request.user == post.author %}
+                    <button
+                    type="button"                         
+                    class="btn btn-outline-primary ms-auto edit-btn"
+                    data-post-id="{{ post.id }}"
+                    id="edit-btn-{{ post.id }}"
+                    
+                    > Edit </button>
+                {% endif %}
               </div>
               
             </div>

@@ -13,4 +13,6 @@ urlpatterns = [
     path("<str:username>", views.profile, name="profile"),
     path("<str:username>/follow", views.follow, name="follow"),
     path("<str:username>/unfollow", views.unfollow, name="unfollow"),
+    path("posts/<int:post_id>", views.post_detail, name="post_detail"),
+    path("edit/<int:post_id>/", views.edit_post, name="edit_post"),
 ]

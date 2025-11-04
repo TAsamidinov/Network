@@ -84,8 +84,8 @@
   display: flex;
   gap: 10px;         
 }
-.post-actions .btn:last-child {
-  margin-left: auto; 
+.post-actions .btn:nth-child(4) {
+  margin-left: auto;
 }
 
 .btn {
@@ -170,4 +170,12 @@
     color: #fff;
     text-transform: uppercase;
     flex-shrink: 0;              
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;  /* align to the right */
+    align-items: center;
+    gap: 12px;                  /* real CSS gap */
+    margin-top: 0.5rem;
   }

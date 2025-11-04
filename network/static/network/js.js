@@ -1,49 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.like-btn').forEach(button => {
-    button.onclick = async function () {
-      const postId = this.dataset.postId;  
-      const isLike = this.classList.contains('like-btn');
-      
-      const likeCountSpan = document.querySelector(`#like-count-${postId}`);
+    button.addEventListener('click', async () => {
+      const postId = button.dataset.postId;
+      const likeCount = document.querySelector(`#like-count-${postId}`);
   
       try {
         const response = await fetch(`/like/${postId}/`, {
-          method: 'PUT',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ like: isLike })
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') }
         });
-  
         if (!response.ok) throw new Error('Network error');
+  
         const result = await response.json();
   
-        // Update counts
-        likeCountSpan.textContent = result.likes;
-        unlikeCountSpan.textContent = result.unlikes;
+        likeCount.textContent = result.likes;
   
-        // Update button states (active color)
-        const likeBtn = document.querySelector(`.like-btn[data-post-id="${postId}"]`);
-        const unlikeBtn = document.querySelector(`.unlike-btn[data-post-id="${postId}"]`);
-  
+        // Change button text and active state instantly
         if (result.liked) {
-          likeBtn.classList.add('active');
-          unlikeBtn.classList.remove('active');
-        } else if (result.unliked) {
-          unlikeBtn.classList.add('active');
-          likeBtn.classList.remove('active');
+          
+          button.innerHTML = `Unlike: <span id="like-count-${postId}">${result.likes}</span>`;
+          button.classList.add('active');
         } else {
-          likeBtn.classList.remove('active');
-          unlikeBtn.classList.remove('active');
+          button.innerHTML = `Like: <span id="like-count-${postId}">${result.likes}</span>`;
+          button.classList.remove('active');
         }
   
       } catch (err) {
         console.error('Error:', err);
       }
-    };
+    });
   });
+
   document.querySelectorAll('.edit-btn').forEach(button => {
     button.onclick = function () {
       const editButton = this; 

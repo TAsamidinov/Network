@@ -133,16 +133,25 @@ def login_view(request):
             })
     else:
         return render(request, "network/login.html")
-
+    
+@require_http_methods(["POST", "PUT"])
 def like_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    if post_id.like == request.user:
+
+    if request.user in post.liked_by.all():
+        post.liked_by.remove(request.user)
         post.likes -= 1
+        liked = False
     else:
+        post.liked_by.add(request.user)
         post.likes += 1
-        
+        liked = True
+
     post.save()
-    return JsonResponse({"likes": post.likes})
+    return JsonResponse({
+        "likes": post.likes,
+        "liked": liked
+    })
 
 def logout_view(request):
     logout(request)

@@ -19,7 +19,11 @@
               <small>Posted on {{ post.timestamp }}</small>
               <br><br>
               <div class="post-actions">
-                <button class="btn btn-outline-primary">Like: {{ post.likes }}</button>
+                <div class="post">
+                  <button class="btn btn-outline-primary like-btn" data-post-id="{{ post.id }}">
+                    Like: <span id="like-count-{{ post.id }}">{{ post.likes }}</span>
+                  </button>
+                </div>
                 <button class="btn btn-outline-primary">Comment: 0</button>
                 <button class="btn btn-outline-primary">Share: 0</button>
                 {% if request.user == post.author %}

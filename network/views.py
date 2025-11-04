@@ -134,6 +134,15 @@ def login_view(request):
     else:
         return render(request, "network/login.html")
 
+def like_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if post_id.like == request.user:
+        post.likes -= 1
+    else:
+        post.likes += 1
+        
+    post.save()
+    return JsonResponse({"likes": post.likes})
 
 def logout_view(request):
     logout(request)

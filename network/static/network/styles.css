@@ -1,4 +1,4 @@
-/* Threads-like header — safely scoped; does NOT style .posts-area, .post-card, .post-right, .post-logo */
+
 :root{
   --bg: #0b0b0b;
   --card: #141414;
@@ -174,8 +174,8 @@
 
   .actions {
     display: flex;
-    justify-content: flex-end;  /* align to the right */
+    justify-content: flex-end;  
     align-items: center;
-    gap: 12px;                  /* real CSS gap */
+    gap: 12px;                  
     margin-top: 0.5rem;
   }
